@@ -49,6 +49,7 @@ def get_rrfeature(index,emotion_type,encode):
     for i in range(1,loop):
         loop_data = rr_interval[i:i+8]
         time_domain_features = get_time_domain_features(loop_data)#從rr值取出特徵
+        
         feature.mean_nni[i] = time_domain_features['mean_nni'] #從得出的feature存入dataframe
         feature.sdnn[i] = time_domain_features['sdnn'] 
         feature.sdsd[i] = time_domain_features['sdsd'] 

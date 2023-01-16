@@ -4,7 +4,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 
-data = pd.read_csv('F:\\project\\all_data.csv',index_col=0)
+data = pd.read_csv('F:\\project\\train_data.csv',index_col=0)
 y = data['encode']
 X = data.drop(['encode'], axis = 1)
 X_train, X_test, y_train, y_test = train_test_split(X, y,random_state=100,test_size=0.3)   
@@ -25,6 +25,6 @@ plt.show()
 
 from sklearn.feature_selection import SelectKBest#選出k個最佳feature
 #No we Will select the top 5 important features
-sel_five_cols = SelectKBest(mutual_info_classif, k=5)
+sel_five_cols = SelectKBest(mutual_info_classif, k=10)
 sel_five_cols.fit(X_train, y_train)
 print(X_train.columns[sel_five_cols.get_support()])

@@ -23,7 +23,6 @@ def get_rrfeature(index,emotion_type,encode):
         if(i == 1):
             neual_all = data
             ppg_signal = np.array(u[1,:] + u[2,:])
-            print(ppg_signal)
         else:
             neual_all=pd.concat([neual_all,data], ignore_index=True)
             reg = np.array(u[1,:] + u[2,:])
@@ -37,7 +36,8 @@ def get_rrfeature(index,emotion_type,encode):
             
     rr_interval= rr_interval[rr_interval != 0]
     spo2 = neual_all[' SpO2 (%)'][zero_index].to_numpy()
-    spo2 = spo2[0:len(spo2)].astype(float)#numpy轉array    
+    spo2 = spo2[0:len(spo2)].astype(float)#numpy轉array 
+    spo2 = spo2[spo2 != 0]  
 
     rr_interval= remove_outliers(rr_intervals=rr_interval, low_rri=500, high_rri=1500)#去除極端值
     rr_interval = [x for x in rr_interval if math.isnan(x) == False]
@@ -45,31 +45,29 @@ def get_rrfeature(index,emotion_type,encode):
 
     loop= round(len(rr_interval)/8)#以8為單位來切割資料
     index = list(range(1,loop-8))#建立index
-    feature = pd.DataFrame(columns=['mean_nni','median_nni','range_nni','mean_hr','max_hr','min_hr','encode','signal'],index=index)#創建空dataframe
+    feature = pd.DataFrame(columns=['mean_nni','median_nni','range_nni','mean_hr','max_hr','min_hr','encode'],index=index)#創建空dataframe
     for i in range(1,loop):
-        loop_data = rr_interval[i:i+8]
-        feature.signal[i] = ppg_signal[zero_index[i]:zero_index[i+1]]
+        
+        
+        # if spo2[i] == 0:
+        #     break
+        # feature.spo2[i] = spo2[i]
 
+        loop_data = rr_interval[i:i+8]
         time_domain_features = get_time_domain_features(loop_data)#從rr值取出特徵
         feature.mean_nni[i] = time_domain_features['mean_nni'] #從得出的feature存入dataframe
         feature.median_nni[i] = time_domain_features['median_nni'] 
         feature.range_nni[i] = time_domain_features['range_nni'] 
         feature.mean_hr[i] = time_domain_features['mean_hr'] 
         feature.max_hr[i] = time_domain_features['max_hr'] 
-        feature.min_hr[i] = time_domain_features['min_hr'] 
-
+        feature.min_hr[i] = time_domain_features['min_hr']  
 
         feature.encode[i] = encode
-    # plt.plot(u[0,:])
-    # plt.show()
-    # plt.plot(u[1,:])
-    # plt.show()
-    # plt.plot(u[2,:])
-    # plt.show()
-    # plt.plot(u[3,:])
-    # plt.show()
-    # plt.plot(u[4,:])
-    # plt.show()
+    # feature['mean_nni'] = (feature['mean_nni'] - feature['mean_nni'].mean() )/ feature['mean_nni'].std()
+    # feature['median_nni'] = (feature['median_nni'] - feature['median_nni'].mean() )/ feature['median_nni'].std()
+    # feature['mean_hr'] = (feature['mean_hr'] - feature['mean_hr'].mean() )/ feature['mean_hr'].std()
+    # feature['max_hr'] = (feature['max_hr'] - feature['max_hr'].mean() )/ feature['max_hr'].std()
+    # feature['min_hr'] = (feature['min_hr'] - feature['min_hr'].mean() )/ feature['min_hr'].std()
     return feature,ppg_signal
 
 def get_1rrfeature(index,emotion_type,encode):
@@ -108,11 +106,14 @@ def get_1rrfeature(index,emotion_type,encode):
 
     loop= round(len(rr_interval)/8)#以8為單位來切割資料
     index = list(range(1,loop-8))#建立index
-    feature = pd.DataFrame(columns=['mean_nni','sdnn','sdsd','nni_50','nni_20','rmssd','median_nni','range_nni','cvsd','cvnni','mean_hr','max_hr','min_hr','std_hr','encode'],index=index)#創建空dataframe
+    feature = pd.DataFrame(columns=['mean_nni','median_nni','range_nni','mean_hr','max_hr','min_hr','encode'],index=index)#創建空dataframe
     for i in range(1,loop):
+        # if spo2[i] == 0:
+        #     break
+        # feature.spo2[i] = spo2[i]
+        
         loop_data = rr_interval[i:i+8]
         time_domain_features = get_time_domain_features(loop_data)#從rr值取出特徵
-        print(time_domain_features['rmssd'])
         feature.mean_nni[i] = time_domain_features['mean_nni'] #從得出的feature存入dataframe
         feature.median_nni[i] = time_domain_features['median_nni'] 
         feature.range_nni[i] = time_domain_features['range_nni'] 
@@ -120,8 +121,15 @@ def get_1rrfeature(index,emotion_type,encode):
         feature.max_hr[i] = time_domain_features['max_hr'] 
         feature.min_hr[i] = time_domain_features['min_hr']  
 
+        
+
 
         feature.encode[i] = encode
+    # feature['mean_nni'] = (feature['mean_nni'] - feature['mean_nni'].mean() )/ feature['mean_nni'].std()
+    # feature['median_nni'] = (feature['median_nni'] - feature['median_nni'].mean() )/ feature['median_nni'].std()
+    # feature['mean_hr'] = (feature['mean_hr'] - feature['mean_hr'].mean() )/ feature['mean_hr'].std()
+    # feature['max_hr'] = (feature['max_hr'] - feature['max_hr'].mean() )/ feature['max_hr'].std()
+    # feature['min_hr'] = (feature['min_hr'] - feature['min_hr'].mean() )/ feature['min_hr'].std()
     # plt.plot(u[0,:])
     # plt.show()
     # plt.plot(u[1,:])
