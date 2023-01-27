@@ -30,12 +30,12 @@ test_feature_y = test_feature_y.values
 
 kf = KFold(n_splits=3 , shuffle=True)
 
-for i, (train_index, test_index) in enumerate(kf.split(test_feature)):
+for i, (train_index, test_index) in enumerate(kf.split(all_feature_x)):
 
-    kfold_train_x = test_feature_x[train_index]
-    kfold_train_y = test_feature_y[train_index]
-    kfold_test_x = test_feature_x[test_index]
-    kfold_test_y = test_feature_y[test_index]
+    kfold_train_x = all_feature_x[train_index]
+    kfold_train_y = all_feature_y[train_index]
+    kfold_test_x = all_feature_x[test_index]
+    kfold_test_y = all_feature_y[test_index]
     ensemble_size = 500
     ensemble = XGBClassifier(n_estimators = ensemble_size , n_jobs = 10)
     ensemble.fit(kfold_train_x , kfold_train_y)
@@ -63,6 +63,10 @@ for i, (train_index, test_index) in enumerate(kf.split(test_feature)):
 
 # ensemble_size = 500
 # ensemble = XGBClassifier(n_estimators = ensemble_size , n_jobs = 10)
+
+# kf = KFold(n_splits=3, shuffle=True)
+
+
 
 # ensemble.fit(all_feature_x , all_feature_y)
 

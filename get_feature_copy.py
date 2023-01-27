@@ -39,20 +39,39 @@ def get_rrfeature(individual,index,emotion_type,encode):
             time_domain_features = get_time_domain_features(loop_data)#從rr值取出特徵
             frequency_domain_features = get_frequency_domain_features(loop_data)
             csi_cvi_features = get_csi_cvi_features(loop_data)
-            feature.mean_nni[j] = (time_domain_features['mean_nni'] - individual[i-1,0]) / individual[i-1,1]#從得出的feature存入dataframe
-            feature.median_nni[j] = (time_domain_features['median_nni'] - individual[i-1,2]) / individual[i-1,3]
-            feature.range_nni[j] = (time_domain_features['range_nni'] - individual[i-1,4]) / individual[i-1,5]
-            feature.mean_hr[j] = (time_domain_features['mean_hr'] - individual[i-1,6]) / individual[i-1,7]
-            feature.max_hr[j] = (time_domain_features['max_hr'] - individual[i-1,8]) / individual[i-1,9]
-            feature.min_hr[j] = (time_domain_features['min_hr']  - individual[i-1,10]) / individual[i-1,11]
-            feature.nni_50[j] = (time_domain_features['nni_50']  - individual[i-1,18]) / individual[i-1,19]
-            feature.nni_20[j] = (time_domain_features['nni_20']  - individual[i-1,20]) / individual[i-1,21]
-            feature.csi[j] = csi_cvi_features['csi'] 
+            # feature.mean_nni[j] = (time_domain_features['mean_nni'] - individual[i-1,0]) / individual[i-1,1]#從得出的feature存入dataframe
+            # feature.median_nni[j] = (time_domain_features['median_nni'] - individual[i-1,2]) / individual[i-1,3]
+            # feature.range_nni[j] = (time_domain_features['range_nni'] - individual[i-1,4]) / individual[i-1,5]
+            # feature.mean_hr[j] = (time_domain_features['mean_hr'] - individual[i-1,6]) / individual[i-1,7]
+            # feature.max_hr[j] = (time_domain_features['max_hr'] - individual[i-1,8]) / individual[i-1,9]
+            # feature.min_hr[j] = (time_domain_features['min_hr']  - individual[i-1,10]) / individual[i-1,11]
+            # feature.nni_50[j] = (time_domain_features['nni_50']  - individual[i-1,18]) / individual[i-1,19]
+            # feature.nni_20[j] = (time_domain_features['nni_20']  - individual[i-1,20]) / individual[i-1,21]
+            # feature.csi[j] = (csi_cvi_features['csi']  - individual[i-1,12]) / individual[i-1,13]
+            # feature.cvi[j] = (csi_cvi_features['cvi'] - individual[i-1,14]) / individual[i-1,15]
+            # feature.Modified_csi[j] = (csi_cvi_features['Modified_csi'] - individual[i-1,16]) / individual[i-1,17]
+            # feature.lf_hf_ratio[j] = (frequency_domain_features['lf_hf_ratio'] - individual[i-1,22]) / individual[i-1,23]
+            # feature.total_power[j] = (frequency_domain_features['total_power'] - individual[i-1,24]) / individual[i-1,25]
+            # feature.vlf[j] = (frequency_domain_features['vlf'] - individual[i-1,26]) / individual[i-1,27]
+            feature.mean_nni[j] = time_domain_features['mean_nni']
+            feature.median_nni[j] = time_domain_features['median_nni'] 
+            feature.range_nni[j] = time_domain_features['range_nni'] 
+            feature.mean_hr[j] = time_domain_features['mean_hr'] 
+            feature.max_hr[j] = time_domain_features['max_hr']
+            feature.min_hr[j] = time_domain_features['min_hr'] 
+            feature.nni_50[j] = time_domain_features['nni_50'] 
+            feature.nni_20[j] = time_domain_features['nni_20'] 
+            feature.csi[j] = csi_cvi_features['csi']  
             feature.cvi[j] = csi_cvi_features['cvi']
             feature.Modified_csi[j] = csi_cvi_features['Modified_csi']
             feature.lf_hf_ratio[j] = frequency_domain_features['lf_hf_ratio']
             feature.total_power[j] = frequency_domain_features['total_power']
             feature.vlf[j] = frequency_domain_features['vlf']
+
+            # def sigmoid(x):#特徵映射
+            #     return 1/(1+np.exp(-x))
+            # feature = sigmoid(feature)
+            
 
             feature.encode[j] = encode 
         all_feature = pd.concat([all_feature , feature],ignore_index= True)

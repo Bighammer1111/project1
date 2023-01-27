@@ -6,6 +6,9 @@ from scipy.signal import find_peaks
 from scipy.fftpack import fft
 from vmdpy import VMD
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn import svm
+from sklearn.linear_model import Ridge
 from sklearn.model_selection import KFold
 from sklearn.metrics import confusion_matrix
 
@@ -32,28 +35,30 @@ test_feature_y = test_feature_y.values
 
 kf = KFold(n_splits=3, shuffle=True)
 
-for i, (train_index, test_index) in enumerate(kf.split(test_feature)):
+for i, (train_index, test_index) in enumerate(kf.split(all_feature_x)):
 
-    # kfold_train_x = test_feature_x[train_index]
-    # kfold_train_y = test_feature_y[train_index]
-    # kfold_test_x = test_feature_x[test_index]
-    # kfold_test_y = test_feature_y[test_index]
-    kfold_train_x = all_feature_x
-    kfold_train_y = all_feature_y
-    kfold_test_x = test_feature_x
-    kfold_test_y = test_feature_y
+    # kfold_train_x = all_feature_x
+    # kfold_train_y = all_feature_y
+    # kfold_test_x = test_feature_x
+    # kfold_test_y = test_feature_y
+    kfold_train_x = all_feature_x[train_index]
+    kfold_train_y = all_feature_y[train_index]
+    kfold_test_x = all_feature_x[test_index]
+    kfold_test_y = all_feature_y[test_index]
     
 
-    forest=RandomForestClassifier(max_depth=4,n_estimators=70,random_state=0)
+    forest=RandomForestClassifier(max_depth=15,n_estimators=70,random_state=0)
+    # forest=KNeighborsRegressor(n_neighbors=3)
+
     # forest.fit(all_feature_x,all_feature_y)
     # prediction=forest.predict(test_feature_x)
 
     # print(forest.score(test_feature_x,test_feature_y))
     forest.fit(kfold_train_x,kfold_train_y)
     prediction=forest.predict(kfold_test_x)
-    print(prediction)
-    print(kfold_test_y)
 
+    print(prediction)
+    prediction = np.round(prediction)
 
     cm = confusion_matrix(prediction, kfold_test_y, labels=[0,1,2])
     fig, px = plt.subplots(figsize=(7.5, 7.5))
