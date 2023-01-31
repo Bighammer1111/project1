@@ -83,7 +83,7 @@ for i in all_index:
         # feature.spo2[i] = spo2[i]
 
             loop_data = rr_interval[j:j+10]
-            print(loop_data)
+
             time_domain_features = get_time_domain_features(loop_data)#從rr值取出特徵
             frequency_domain_features = get_frequency_domain_features(loop_data)
             csi_cvi_features = get_csi_cvi_features(loop_data)

@@ -34,7 +34,7 @@ class StackingRegressor():
             # 取得第i層訓練資料集
             train_x = meta_data[i]
             train_y = meta_targets[i]
-
+            print(train_x)
             # 建立交叉驗證
             KF = KFold(n_splits=5)
             m = 0
@@ -56,6 +56,7 @@ class StackingRegressor():
             # 儲存第i層基學習器的預測結果
             # 作為第i+1層基學習器的訓練資料
             data_z = data_z.transpose()
+            print(data_z)
             meta_data.append(data_z)
             meta_targets.append(target_z)
 

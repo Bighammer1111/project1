@@ -4,8 +4,15 @@ from hrvanalysis import get_time_domain_features,remove_outliers,get_frequency_d
 from vmdpy import VMD
 import matplotlib.pyplot as plt
 import math
+from scipy import fft
 
 def get_rrfeature(individual,index,emotion_type,encode):
+
+    tau = 0#噪聲容限
+    k = 4#分解模態個數
+    dc = 1 #訊號若無直流成分設爲0，有則為1
+    init = 1 #初始化w值，為1時均匀分佈產生的隨機數
+    tol = 1e-7 #誤差大小常數，決定精度與迭代次數
 
     all_feature = pd.DataFrame(columns=['mean_nni','median_nni','range_nni','mean_hr','max_hr','min_hr',
     'nni_50','nni_20','csi','cvi' , 'Modified_csi','lf_hf_ratio','total_power','vlf','encode'],index=index)#創建空dataframe
@@ -27,7 +34,11 @@ def get_rrfeature(individual,index,emotion_type,encode):
         index = list(range(1,loop))#建立index
         feature = pd.DataFrame(columns=['mean_nni','median_nni','range_nni','mean_hr','max_hr','min_hr',
     'nni_50','nni_20','csi','cvi' , 'Modified_csi','lf_hf_ratio','total_power','vlf','encode'],index=index)#創建空dataframe
-        
+        pd1 = data[' Green Count'].to_numpy()
+        alpha = len(pd1) * 1.5 #帶寬限制，一般取資料長度1.5~2倍
+        u,u_hat,omega = VMD(pd1,alpha,tau,k,dc,init,tol)
+        ppg_signal = np.array(u[1,:] + u[2,:])
+        signal_len = np.round(len(ppg_signal) / len(rr_interval))
         for j in range(1,loop):
         
         
@@ -39,6 +50,9 @@ def get_rrfeature(individual,index,emotion_type,encode):
             time_domain_features = get_time_domain_features(loop_data)#從rr值取出特徵
             frequency_domain_features = get_frequency_domain_features(loop_data)
             csi_cvi_features = get_csi_cvi_features(loop_data)
+            loop_signal = ppg_signal[int(j * signal_len) : int((j+10) * signal_len)]
+            IP, IF, IA =frequency_transform(loop_signal, sample_rate = 128, method='nht')
+            print(IF)
             # feature.mean_nni[j] = (time_domain_features['mean_nni'] - individual[i-1,0]) / individual[i-1,1]#從得出的feature存入dataframe
             # feature.median_nni[j] = (time_domain_features['median_nni'] - individual[i-1,2]) / individual[i-1,3]
             # feature.range_nni[j] = (time_domain_features['range_nni'] - individual[i-1,4]) / individual[i-1,5]
@@ -82,6 +96,5 @@ def get_rrfeature(individual,index,emotion_type,encode):
     
 
     print(all_feature)
-    del(rr_interval)
     ppg_signal = 0
     return all_feature,ppg_signal

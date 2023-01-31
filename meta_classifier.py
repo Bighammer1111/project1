@@ -7,6 +7,7 @@ from StackingRegressor import StackingRegressor
 from sklearn.model_selection import KFold
 from sklearn import svm
 from sklearn.neural_network import MLPClassifier
+from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import confusion_matrix
 import matplotlib.pyplot as plt
 
@@ -30,16 +31,16 @@ base_learners = []
 knn = KNeighborsRegressor(n_neighbors=1)
 base_learners.append(knn)
 
-rf=RandomForestClassifier(max_depth=15,n_estimators=70,random_state=0)
+rf=DecisionTreeClassifier(max_depth=15,random_state=0)
 base_learners.append(rf)
 
 MLP1 = MLPClassifier(hidden_layer_sizes=(100,) , random_state=2)
-base_learners.append(MLP1)
+# base_learners.append(MLP1)
 # svm1 = Ridge()
 
-meta_learner = RandomForestClassifier(n_estimators=100,random_state=0)
+meta_learner = MLPClassifier(hidden_layer_sizes=(50,3) , random_state=2)
 
-sc = StackingRegressor([[rf,knn,MLP1] , [meta_learner]])
+sc = StackingRegressor([[rf,knn] , [meta_learner]])
 
 
 # sc.fit(all_feature_x , all_feature_y) 
@@ -89,13 +90,9 @@ for i, (train_index, test_index) in enumerate(kf.split(all_feature_x)):
     all_feature_y1 = all_feature_y[train_index]
     test_feature_x1 = all_feature_x[test_index]
     test_feature_y1 = all_feature_y[test_index]
-    sc.fit(all_feature_x1 , all_feature_y1)
-    meta_data = sc.predict(test_feature_x1)
-
     # 訓練、預測
     sc.fit(all_feature_x1, all_feature_y1)
     meta_data = sc.predict(test_feature_x1)
-    print(meta_data)
 
     # 衡量基學習器跟集成後效能
     base_errors = []
