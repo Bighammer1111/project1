@@ -7,38 +7,40 @@ import pandas as pd
 from sklearn.metrics import confusion_matrix
 import matplotlib.pyplot as plt
 from sklearn.model_selection import KFold
-digits = load_digits()
+
 
 np.random.seed(1)
-# all_feature = pd.read_csv('train_data.csv')
-# test_feature = pd.read_csv('test_data.csv')
+all_feature = pd.read_csv('train_data.csv')
+test_feature = pd.read_csv('test_data.csv')
 
-# all_feature_x=all_feature.drop(['encode'],axis=1)#將encodeeeeee去掉，方便訓練
-# all_feature_y=all_feature['encode']
-# all_feature_y=all_feature_y.astype('int')
-# all_feature_x = all_feature_x.values
-# all_feature_y = all_feature_y.values
+all_feature_x=all_feature.drop(['encode'],axis=1)#將encodeeeeee去掉，方便訓練
+# all_feature_x = all_feature_x.drop(['freq_mean' , 'freq_std'] , axis=1)
+all_feature_y=all_feature['encode']
+all_feature_y=all_feature_y.astype('int')
+all_feature_x = all_feature_x.values
+all_feature_y = all_feature_y.values
 
-# test_feature_x=test_feature.drop(['encode'],axis=1)#將encode去掉，方便訓練
-# test_feature_y=test_feature['encode']
-# test_feature_y=test_feature_y.astype('int')
-# test_x = test_feature_x.values
-# test_y = test_feature_y.values
+test_feature_x=test_feature.drop(['encode'],axis=1)#將encode去掉，方便訓練
+# test_feature_x = test_feature_x.drop(['freq_mean' , 'freq_std'] , axis=1)
+test_feature_y=test_feature['encode']
+test_feature_y=test_feature_y.astype('int')
+test_x = test_feature_x.values
+test_y = test_feature_y.values
 
 
 
 kf = KFold(n_splits=3 , shuffle=True)
 
-for i, (train_index, test_index) in enumerate(kf.split(digits)):
-    train_size = 1500
+for i, (train_index, test_index) in enumerate(kf.split(test_feature_x)):
+    train_size = 8529
     # train_x = all_feature_x[train_index]
     # train_y = all_feature_y[train_index]
     # test_x = all_feature_x[test_index]
     # test_y = all_feature_y[test_index]
-    train_x = digits.data[:train_size]
-    train_y = digits.target[:train_size]
-    test_x = digits.data[train_size:]
-    test_y = digits.target[train_size:]
+    train_x = all_feature_x
+    train_y = all_feature_y
+    test_x = test_x
+    test_y = test_y
 
 
     
@@ -105,7 +107,7 @@ for i, (train_index, test_index) in enumerate(kf.split(digits)):
 
     pred = ensemble_predictions
 
-    cm = confusion_matrix(test_y, pred, labels=[0,1,2])
+    cm = confusion_matrix(ensemble_predictions,test_feature_y , labels=[0,1,2])
     fig, px = plt.subplots(figsize=(7.5, 7.5))
     px.matshow(cm, cmap=plt.cm.YlOrRd, alpha=0.5)
     for m in range(cm.shape[0]):
