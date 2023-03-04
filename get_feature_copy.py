@@ -4,7 +4,7 @@ from hrvanalysis import get_time_domain_features,remove_outliers,get_frequency_d
 from vmdpy import VMD
 import matplotlib.pyplot as plt
 import math
-from scipy import fft
+from scipy.signal import hilbert, chirp
 
 def get_rrfeature(individual,index,emotion_type,encode):
 
@@ -13,14 +13,15 @@ def get_rrfeature(individual,index,emotion_type,encode):
     dc = 1 #訊號若無直流成分設爲0，有則為1
     init = 1 #初始化w值，為1時均匀分佈產生的隨機數
     tol = 1e-7 #誤差大小常數，決定精度與迭代次數
-
+    fs = 128
     all_feature = pd.DataFrame(columns=['mean_nni','median_nni','range_nni','mean_hr','max_hr','min_hr',
-    'nni_50','nni_20','csi','cvi' , 'Modified_csi','lf_hf_ratio','total_power','vlf','encode'],index=index)#創建空dataframe
+    'nni_50','nni_20','csi','cvi' , 'Modified_csi','lf_hf_ratio','total_power','vlf','freq_mean','freq_std','encode'],index = index)#創建空dataframe
     for i in index:
-        file_path = 'F:\\project\\data\\no'+ str(i) + ' '+ emotion_type+'.csv'
+        file_path = 'C:\\Users\\nemo2\\Documents\\project\\data\\no'+ str(i) + ' '+ emotion_type+'.csv'
         data = pd.read_csv(file_path,skiprows=range(1,500))#刪除資料前段
 
         rr_interval = data[' RR'].to_numpy()#rr轉numpy
+        print(rr_interval)
         rr_interval = rr_interval[0:len(rr_interval)].astype(float)#numpy轉array
 
         zero_index = np.where(rr_interval != 0)
@@ -33,7 +34,7 @@ def get_rrfeature(individual,index,emotion_type,encode):
         loop= len(rr_interval)-10#以8為單位來切割資料
         index = list(range(1,loop))#建立index
         feature = pd.DataFrame(columns=['mean_nni','median_nni','range_nni','mean_hr','max_hr','min_hr',
-    'nni_50','nni_20','csi','cvi' , 'Modified_csi','lf_hf_ratio','total_power','vlf','encode'],index=index)#創建空dataframe
+    'nni_50','nni_20','csi','cvi' , 'Modified_csi','lf_hf_ratio','total_power','vlf','freq_mean','freq_std','encode'],index = index)#創建空dataframe
         pd1 = data[' Green Count'].to_numpy()
         alpha = len(pd1) * 1.5 #帶寬限制，一般取資料長度1.5~2倍
         u,u_hat,omega = VMD(pd1,alpha,tau,k,dc,init,tol)
@@ -51,8 +52,12 @@ def get_rrfeature(individual,index,emotion_type,encode):
             frequency_domain_features = get_frequency_domain_features(loop_data)
             csi_cvi_features = get_csi_cvi_features(loop_data)
             loop_signal = ppg_signal[int(j * signal_len) : int((j+10) * signal_len)]
-            IP, IF, IA =frequency_transform(loop_signal, sample_rate = 128, method='nht')
-            print(IF)
+            analytic_signal = hilbert(loop_signal)
+            instantaneous_phase = np.unwrap(np.angle(analytic_signal))
+            instantaneous_frequency = (np.diff(instantaneous_phase) /
+                           (2.0*np.pi) * fs)
+            freq_mean = np.mean(instantaneous_frequency)
+            freq_std = np.std(instantaneous_frequency)
             # feature.mean_nni[j] = (time_domain_features['mean_nni'] - individual[i-1,0]) / individual[i-1,1]#從得出的feature存入dataframe
             # feature.median_nni[j] = (time_domain_features['median_nni'] - individual[i-1,2]) / individual[i-1,3]
             # feature.range_nni[j] = (time_domain_features['range_nni'] - individual[i-1,4]) / individual[i-1,5]
@@ -81,6 +86,8 @@ def get_rrfeature(individual,index,emotion_type,encode):
             feature.lf_hf_ratio[j] = frequency_domain_features['lf_hf_ratio']
             feature.total_power[j] = frequency_domain_features['total_power']
             feature.vlf[j] = frequency_domain_features['vlf']
+            feature.freq_mean[j] = freq_mean
+            feature.freq_std = freq_std
 
             # def sigmoid(x):#特徵映射
             #     return 1/(1+np.exp(-x))

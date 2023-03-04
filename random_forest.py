@@ -7,7 +7,7 @@ from scipy.fftpack import fft
 from vmdpy import VMD
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsRegressor
-from sklearn import svm
+from sklearn.svm import SVC
 from sklearn.linear_model import Ridge
 from sklearn.model_selection import KFold
 from sklearn.metrics import confusion_matrix
@@ -37,17 +37,18 @@ kf = KFold(n_splits=3, shuffle=True)
 
 for i, (train_index, test_index) in enumerate(kf.split(all_feature_x)):
 
-    # kfold_train_x = all_feature_x
-    # kfold_train_y = all_feature_y
-    # kfold_test_x = test_feature_x
-    # kfold_test_y = test_feature_y
-    kfold_train_x = all_feature_x[train_index]
-    kfold_train_y = all_feature_y[train_index]
-    kfold_test_x = all_feature_x[test_index]
-    kfold_test_y = all_feature_y[test_index]
+    kfold_train_x = all_feature_x
+    kfold_train_y = all_feature_y
+    kfold_test_x = test_feature_x
+    kfold_test_y = test_feature_y
+    # kfold_train_x = all_feature_x[train_index]
+    # kfold_train_y = all_feature_y[train_index]
+    # kfold_test_x = all_feature_x[test_index]
+    # kfold_test_y = all_feature_y[test_index]
     
 
-    forest=RandomForestClassifier(max_depth=15,n_estimators=70,random_state=0)
+    # forest=RandomForestClassifier(max_depth=15,n_estimators=70,random_state=0)
+    forest= SVC(kernel='sigmoid', C = 10.0)
     # forest=KNeighborsRegressor(n_neighbors=3)
 
     # forest.fit(all_feature_x,all_feature_y)
@@ -60,7 +61,7 @@ for i, (train_index, test_index) in enumerate(kf.split(all_feature_x)):
     print(prediction)
     prediction = np.round(prediction)
 
-    cm = confusion_matrix(prediction, kfold_test_y, labels=[0,1,2])
+    cm = confusion_matrix(prediction,test_feature_y , labels=[0,1,2])
     fig, px = plt.subplots(figsize=(7.5, 7.5))
     px.matshow(cm, cmap=plt.cm.YlOrRd, alpha=0.5)
     for m in range(cm.shape[0]):
