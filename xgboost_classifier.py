@@ -68,7 +68,7 @@ test_feature_y = test_feature_y.values
 #     plt.show()
 
 ensemble_size = 100
-ensemble = XGBClassifier(n_estimators = ensemble_size , n_jobs = 10 ,max_depth = 20)
+ensemble = XGBClassifier(n_estimators = ensemble_size , n_jobs = 10, learning_rate= 0.3 ,max_depth = 20)
 
 kf = KFold(n_splits=3, shuffle=True)
 
@@ -79,10 +79,8 @@ ensemble.fit(all_feature_x , all_feature_y)
 ensemble_predictions = ensemble.predict(test_feature_x)
 ensemble_predictions2 = ensemble.predict(all_feature_x)
 ensemble_acc = metrics.accuracy_score(test_feature_y , ensemble_predictions)
-ensemble_acc2 = metrics.accuracy_score(all_feature_y , ensemble_predictions2)
 
 print('Test_data: %.2f' % ensemble_acc)
-print('Train_data: %.2f' % ensemble_acc2)
 
 cm = confusion_matrix(ensemble_predictions,test_feature_y , labels=[0,1,2])
 fig, px = plt.subplots(figsize=(7.5, 7.5))
@@ -96,3 +94,7 @@ plt.xlabel('Predictions', fontsize=16)
 plt.ylabel('Actuals', fontsize=16)
 plt.title('Confusion Matrix', fontsize=15)
 plt.show()
+print(metrics.accuracy_score(test_feature_y , ensemble_predictions))
+print(metrics.precision_score(test_feature_y , ensemble_predictions,average="macro"))
+print(metrics.recall_score(test_feature_y , ensemble_predictions,average="macro"))
+print(metrics.f1_score(test_feature_y , ensemble_predictions,average="macro"))

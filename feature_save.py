@@ -28,34 +28,34 @@ print(neual_index)
 # negetive_index = [14]
 
 
-mean_nni_mean = np.zeros((all_index[-1] , 1))
-mean_nni_std = np.zeros((all_index[-1] , 1))
-median_nni_mean = np.zeros((all_index[-1] , 1))
-median_nni_std = np.zeros((all_index[-1] , 1))
-range_nni_mean = np.zeros((all_index[-1] , 1))
-range_nni_std = np.zeros((all_index[-1] , 1))
-mean_hr_mean = np.zeros((all_index[-1] , 1))
-mean_hr_std = np.zeros((all_index[-1] , 1))
-max_hr_mean = np.zeros((all_index[-1] , 1))
-max_hr_std = np.zeros((all_index[-1] , 1))
-min_hr_mean = np.zeros((all_index[-1] , 1))
-min_hr_std = np.zeros((all_index[-1] , 1))
-nni_50_mean = np.zeros((all_index[-1] , 1))
-nni_50_std = np.zeros((all_index[-1] , 1))
-nni_20_mean = np.zeros((all_index[-1] , 1))
-nni_20_std = np.zeros((all_index[-1] , 1))
-csi_mean = np.zeros((all_index[-1] , 1))
-csi_std = np.zeros((all_index[-1] , 1))
-cvi_mean = np.zeros((all_index[-1] , 1))
-cvi_std = np.zeros((all_index[-1] , 1))
-Modified_csi_mean = np.zeros((all_index[-1] , 1))
-Modified_csi_std = np.zeros((all_index[-1] , 1))
-lf_hf_ratio_mean = np.zeros((all_index[-1] , 1))
-lf_hf_ratio_std = np.zeros((all_index[-1] , 1))
-total_power_mean = np.zeros((all_index[-1] , 1))
-total_power_std = np.zeros((all_index[-1] , 1))
-vlf_mean = np.zeros((all_index[-1] , 1))
-vlf_std = np.zeros((all_index[-1] , 1))
+# mean_nni_mean = np.zeros((all_index[-1] , 1))#去個體化 最終結果不采用
+# mean_nni_std = np.zeros((all_index[-1] , 1))
+# median_nni_mean = np.zeros((all_index[-1] , 1))
+# median_nni_std = np.zeros((all_index[-1] , 1))
+# range_nni_mean = np.zeros((all_index[-1] , 1))
+# range_nni_std = np.zeros((all_index[-1] , 1))
+# mean_hr_mean = np.zeros((all_index[-1] , 1))
+# mean_hr_std = np.zeros((all_index[-1] , 1))
+# max_hr_mean = np.zeros((all_index[-1] , 1))
+# max_hr_std = np.zeros((all_index[-1] , 1))
+# min_hr_mean = np.zeros((all_index[-1] , 1))
+# min_hr_std = np.zeros((all_index[-1] , 1))
+# nni_50_mean = np.zeros((all_index[-1] , 1))
+# nni_50_std = np.zeros((all_index[-1] , 1))
+# nni_20_mean = np.zeros((all_index[-1] , 1))
+# nni_20_std = np.zeros((all_index[-1] , 1))
+# csi_mean = np.zeros((all_index[-1] , 1))
+# csi_std = np.zeros((all_index[-1] , 1))
+# cvi_mean = np.zeros((all_index[-1] , 1))
+# cvi_std = np.zeros((all_index[-1] , 1))
+# Modified_csi_mean = np.zeros((all_index[-1] , 1))
+# Modified_csi_std = np.zeros((all_index[-1] , 1))
+# lf_hf_ratio_mean = np.zeros((all_index[-1] , 1))
+# lf_hf_ratio_std = np.zeros((all_index[-1] , 1))
+# total_power_mean = np.zeros((all_index[-1] , 1))
+# total_power_std = np.zeros((all_index[-1] , 1))
+# vlf_mean = np.zeros((all_index[-1] , 1))
+# vlf_std = np.zeros((all_index[-1] , 1))
 # for i in all_index:
 #         file_path = 'C:\\Users\\nemo2\\Documents\\project\\data\\no'+ str(i) + ' baseline.csv'
 #         data = pd.read_csv(file_path,skiprows=range(1,1000))#刪除資料前段
@@ -147,9 +147,9 @@ all_feature=all_feature.replace([np.inf, -np.inf], np.nan).dropna(axis=0)#清除
 all_feature.to_csv('train_data.csv',index=False)
 
 iii = [14]
-test_feature,ppg_signal = get_rrfeature(individual = individual,index = iii , emotion_type= 'test' , encode = 2)#測試另外測量的資料
-# test_positive_feature,ppg_signal = get_rrfeature(individual = individual,index = iii , emotion_type= 'testpo' , encode = 1)
-# test_neual_feature,ppg_signal = get_rrfeature(individual = individual,index = iii , emotion_type= 'testne' , encode = 0)
+test_neual_feature,ppg_signal = get_rrfeature(individual = individual,index = iii , emotion_type= 'test' , encode = 2)#測試另外測量的資料
+test_positive_feature,ppg_signal = get_rrfeature(individual = individual,index = iii , emotion_type= 'testpo' , encode = 1)
+test_negetive_feature,ppg_signal = get_rrfeature(individual = individual,index = iii , emotion_type= 'testne' , encode = 0)
 
 # test_negetive_feature,ppg_signal = get_rrfeature(individual = individual,index = test_neual_index , emotion_type= 'neual' , encode = 2)#測試
 # test_positive_feature,ppg_signal = get_rrfeature(individual = individual,index = test_neual_index , emotion_type= 'positive' , encode = 1)
@@ -160,7 +160,7 @@ test_feature,ppg_signal = get_rrfeature(individual = individual,index = iii , em
 # test_feature,ppg_signal = get_rrfeature(individual = individual,index = test_neual_index , emotion_type= 'test' , encode = 0)
 
 
-# test_feature = pd.concat([test_neual_feature , test_positive_feature,test_negetive_feature],ignore_index=1)
+test_feature = pd.concat([test_neual_feature , test_positive_feature,test_negetive_feature],ignore_index=1)
 test_feature=test_feature.replace([np.inf, -np.inf], np.nan).dropna(axis=0)#清除nan值
 test_feature.to_csv('test_data.csv',index=False)
 
@@ -179,9 +179,9 @@ df3 = all_feature[all_feature['encode']==2]
 # plt.annotate('neural', xy=(73, 200), xytext=(73, 225), arrowprops = {'color':'green'})
 # plt.annotate('positive', xy=(85, 275), xytext=(85, 300), arrowprops = {'color':'blue'})
 # plt.annotate('negetive', xy=(80, 255), xytext=(80, 280), arrowprops = {'color':'orange'})
-plt.scatter("mean_nni", "median_nni", data=df1, alpha = 0.2)
-plt.scatter("mean_nni", "median_nni", data=df2, alpha = 0.2)
-plt.scatter("mean_nni", "median_nni", data=df3, alpha = 0.2)
+plt.scatter("freq_mean", "freq_std", data=df1, alpha = 0.2)
+plt.scatter("freq_mean", "freq_std", data=df2, alpha = 0.2)
+plt.scatter("freq_mean", "freq_std", data=df3, alpha = 0.2)
 plt.annotate('neural', xy=(73, 200), xytext=(73, 225), arrowprops = {'color':'green'})
 plt.annotate('positive', xy=(85, 275), xytext=(85, 300), arrowprops = {'color':'blue'})
 plt.annotate('negetive', xy=(80, 255), xytext=(80, 280), arrowprops = {'color':'orange'})

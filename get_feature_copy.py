@@ -52,6 +52,13 @@ def get_rrfeature(individual,index,emotion_type,encode):
             frequency_domain_features = get_frequency_domain_features(loop_data)
             csi_cvi_features = get_csi_cvi_features(loop_data)
             loop_signal = ppg_signal[int(j * signal_len) : int((j+10) * signal_len)]
+            # plt.subplot(211)
+            # plt.title('orginal signal')
+            # plt.plot(pd1[int(j *10* signal_len) : int((j*10+10) * signal_len)])
+            # plt.subplot(212)
+            # plt.title('signal after VMD')
+            # plt.plot(loop_signal)
+            # plt.show()
             analytic_signal = hilbert(loop_signal)
             instantaneous_phase = np.unwrap(np.angle(analytic_signal))
             instantaneous_frequency = (np.diff(instantaneous_phase) /
