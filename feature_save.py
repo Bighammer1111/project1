@@ -1,3 +1,4 @@
+#此爲資料前處理，以相同的命名方式然後放在資料夾内就會根據設定的index進行讀取
 import pandas as pd
 import numpy as np
 import os
@@ -7,19 +8,10 @@ from hrvanalysis import get_time_domain_features,remove_outliers,get_frequency_d
 from get_feature_copy import get_rrfeature
 import math
 
-all_index = [1,2,3,4,5,6,7,8,9,10,11,12,13,14]
-test_neual_index=[13]
-test_positive_index = [13]
-test_negetive_index = [13]
-neual_index=[1,2,3,4,5,6,7,8,9,11,12,10,14]
-positive_index = [1,2,3,4,5,6,7,8,9,11,12,10,14]
-negetive_index = [1,2,3,4,5,6,7,8,9,11,12,10,14]
-neual_index = np.delete(neual_index,np.where(neual_index == 10))
-positive_index = np.delete(positive_index,np.where(neual_index == 10))
-negetive_index = np.delete(negetive_index,np.where(neual_index == 10))#將測試資料從訓練資料中刪除
+all_index = [1,2,3,4,5,6,7,8,9,10,11,12,13,14]#設定訓練集的資料編號
 
-print(test_neual_index)
-print(neual_index)
+
+
 # test_neual_index=[14]
 # test_positive_index = [14]
 # test_negetive_index = [14]
@@ -146,7 +138,7 @@ all_feature = pd.concat([neual_feature , positive_feature,negetive_feature],igno
 all_feature=all_feature.replace([np.inf, -np.inf], np.nan).dropna(axis=0)#清除nan值
 all_feature.to_csv('train_data.csv',index=False)
 
-iii = [14]
+iii = [14]#另外測量資料的編號
 test_neual_feature,ppg_signal = get_rrfeature(individual = individual,index = iii , emotion_type= 'test' , encode = 2)#測試另外測量的資料
 test_positive_feature,ppg_signal = get_rrfeature(individual = individual,index = iii , emotion_type= 'testpo' , encode = 1)
 test_negetive_feature,ppg_signal = get_rrfeature(individual = individual,index = iii , emotion_type= 'testne' , encode = 0)

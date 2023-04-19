@@ -13,7 +13,7 @@ np.random.seed(1)
 all_feature = pd.read_csv('train_data.csv')
 test_feature = pd.read_csv('test_data.csv')
 
-all_feature_x=all_feature.drop(['encode'],axis=1)#將encodeeeeee去掉，方便訓練
+all_feature_x=all_feature.drop(['encode'],axis=1)#將encode去掉，方便訓練
 # all_feature_x = all_feature_x.drop(['freq_mean' , 'freq_std'] , axis=1)
 all_feature_y=all_feature['encode']
 all_feature_y=all_feature_y.astype('int')

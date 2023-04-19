@@ -1,3 +1,6 @@
+#此爲最終使用的資料前處理函數，在feature_save那邊有引用這裏，非必要請勿亂動
+#在不同電腦上使用時因爲資料位置不同，請記得修改23行的filepath
+
 import pandas as pd
 import numpy as np
 from hrvanalysis import get_time_domain_features,remove_outliers,get_frequency_domain_features,get_csi_cvi_features
@@ -17,7 +20,7 @@ def get_rrfeature(individual,index,emotion_type,encode):
     all_feature = pd.DataFrame(columns=['mean_nni','median_nni','range_nni','mean_hr','max_hr','min_hr',
     'nni_50','nni_20','csi','cvi' , 'Modified_csi','lf_hf_ratio','total_power','vlf','freq_mean','freq_std','encode'],index = index)#創建空dataframe
     for i in index:
-        file_path = 'C:\\Users\\nemo2\\Documents\\project\\data\\no'+ str(i) + ' '+ emotion_type+'.csv'
+        file_path = 'C:\\Users\\nemo2\\Documents\\project\\data\\no'+ str(i) + ' '+ emotion_type+'.csv'#資料所在的資料夾位置
         data = pd.read_csv(file_path,skiprows=range(1,500))#刪除資料前段
 
         rr_interval = data[' RR'].to_numpy()#rr轉numpy
