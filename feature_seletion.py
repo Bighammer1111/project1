@@ -1,3 +1,5 @@
+#本程式為測試各個特徵的有效程度
+
 import pandas as pd
 import numpy as np
 import seaborn as sns
