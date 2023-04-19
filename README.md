@@ -1,4 +1,6 @@
 # project1
 已經内含處理完的train data跟test data
 如果需要新增資料，請把資料放在同一個資料夾内，參照get_feature_copy.py内的檔案路徑就好了
-新增檔案請從feature save開始，裏面的index是設定哪些是資料集哪些是訓練集，如果
+新增檔案請從feature save開始，裏面的index是設定哪些是資料集哪些是訓練集，需要以我在get_feature_copy内定義的命名方式。
+執行feature save處理完資料後，剩下的程式就是各個分類演算法，使用前記得安裝對應的package
+
